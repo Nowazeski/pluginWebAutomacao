@@ -1,0 +1,18 @@
+{
+  "manifest_version": 3,
+  "name": "Tawk Auto",
+  "version": "1.0",
+  "description": "Automatiza respostas no Tawk.to",
+  "permissions": ["scripting", "activeTab"],
+  "action": {
+    "default_title": "Auto Tawk",
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://dashboard.tawk.to/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

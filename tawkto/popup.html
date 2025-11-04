@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      body {
+        width: 200px;
+        text-align: center;
+        font-family: sans-serif;
+        padding: 15px;
+      }
+
+      #toggle {
+        background: #0078d7;
+        color: white;
+        border: none;
+        padding: 12px;
+        border-radius: 10px;
+        cursor: pointer;
+        width: 80px;
+        height: 80px;
+        font-size: 28px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0 auto;
+        transition: background 0.3s, transform 0.2s;
+      }
+
+      #toggle.on {
+        background: #d9534f; /* vermelho quando ligado */
+      }
+
+      #toggle:hover {
+        transform: scale(1.05);
+      }
+
+      h3 {
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h3>Auto Tawk</h3>
+    <button id="toggle">▶️</button>
+    <script src="popup.js"></script>
+  </body>
+</html>
