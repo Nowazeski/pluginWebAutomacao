@@ -1,11 +1,10 @@
 {
   "manifest_version": 3,
   "name": "Tawk Auto",
-  "version": "1.0",
-  "description": "Automatiza respostas no Tawk.to",
-  "permissions": ["scripting", "activeTab"],
+  "version": "3.0",
+  "description": "Automatiza respostas no Tawk.to com botoes sincronizados",
+  "permissions": ["scripting", "activeTab", "storage"],
   "action": {
-    "default_title": "Auto Tawk",
     "default_popup": "popup.html"
   },
   "content_scripts": [

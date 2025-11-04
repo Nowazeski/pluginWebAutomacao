@@ -1,61 +1,52 @@
 // --- CONFIGURACOES ---
 const seletorChatNovo = '.tawk-chat-item.unseen.need-attn';
 const seletorBotaoJoin = '.tawk-button.tawk-button-solid-primary.tawk-button-solid.tawk-button-medium';
-const seletorCampoTexto = '.tawk-message-input.tawk-input-field';
+const seletorCampoTexto = '.tawk-border-remove.tawk-message-input.tawk-input-field.tawk-message-autoresize';
 const seletorBotaoEnviar = '.tawk-button.tawk-button-solid-primary.tawk-button-solid.tawk-button-small.tawk-message-send';
-
-const mensagemAutomatica = 'Hola! 👋Mi nombre es Linette, soy parte del equipo de soporte comercial de Adrian Rivera 🦈¿Como puedo ayudarte a formalizar tu inscripción?🔥';
-const delay = 3000; // milissegundos entre as acoes
+const mensagemAutomatica = 'Hola! 👋Mi nombre es Linette, soy parte del equipo de soporte comercial de Adrian Rivera 🦈¿Como puedo ayudarte a formalizar tu inscripcion?🔥';
+const delay = 1000;
 
 // --- ESTADO ---
 window.autoLigado = false;
+let botaoVisivel = true;
 const jaRespondidos = new WeakSet();
 
-// --- FUNCOES AUXILIARES ---
+// --- FUNCOES ---
 function esperar(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((r) => setTimeout(r, ms));
 }
 
-// --- FUNCAO PRINCIPAL ---
 async function responderChat(chatEl) {
   if (!window.autoLigado || !chatEl || jaRespondidos.has(chatEl)) return;
   jaRespondidos.add(chatEl);
 
-  console.log('🟢 Novo chat detectado!');
   chatEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
   chatEl.click();
   await esperar(delay);
 
-  const botaoJoin = document.querySelector(seletorBotaoJoin);
-  if (botaoJoin) {
-    botaoJoin.click();
-    console.log('👉 Ingressando no chat...');
-    await esperar(delay);
+  const join = document.querySelector(seletorBotaoJoin);
+  if (join) {
+    join.click();
+    await esperar(delay * 2);
   }
 
-  const campoMsg = document.querySelector(seletorCampoTexto);
-  if (campoMsg) {
-    campoMsg.focus();
-    campoMsg.value = mensagemAutomatica;
-    campoMsg.dispatchEvent(new Event('input', { bubbles: true }));
-    console.log('💬 Mensagem escrita.');
+  const campo = document.querySelector(seletorCampoTexto);
+  if (campo) {
+    campo.focus();
+    campo.textContent = mensagemAutomatica;
+    campo.dispatchEvent(new Event('input', { bubbles: true }));
+    campo.dispatchEvent(new KeyboardEvent('keydown', { bubbles: true }));
+    campo.dispatchEvent(new KeyboardEvent('keyup', { bubbles: true }));
     await esperar(delay);
-  }
-
-  const botaoEnviar = document.querySelector(seletorBotaoEnviar);
-  if (botaoEnviar) {
-    botaoEnviar.click();
-    console.log('📨 Mensagem enviada!');
+    const enviar = document.querySelector(seletorBotaoEnviar);
+    if (enviar) enviar.click();
   }
 }
 
-// --- MONITORAMENTO ---
 function verificarChats() {
   if (!window.autoLigado) return;
-  const chats = document.querySelectorAll(seletorChatNovo);
-  chats.forEach(responderChat);
+  document.querySelectorAll(seletorChatNovo).forEach(responderChat);
 }
-
 setInterval(verificarChats, 2000);
 
 // --- BOTAO FLUTUANTE ---
@@ -65,44 +56,66 @@ function criarBotaoFlutuante() {
   const btn = document.createElement('button');
   btn.id = 'autoTawkBtn';
   btn.textContent = '▶️';
-  btn.style.position = 'fixed';
-  btn.style.bottom = '20px';
-  btn.style.right = '20px';
-  btn.style.zIndex = '999999';
-  btn.style.width = '60px';
-  btn.style.height = '60px';
-  btn.style.borderRadius = '50%';
-  btn.style.border = 'none';
-  btn.style.background = '#0078d7';
-  btn.style.color = 'white';
-  btn.style.fontSize = '28px';
-  btn.style.cursor = 'pointer';
-  btn.style.boxShadow = '0 2px 6px rgba(0,0,0,0.3)';
-  btn.style.transition = 'background 0.3s, transform 0.2s';
-  btn.title = 'Auto responder';
+  Object.assign(btn.style, {
+    position: 'fixed',
+    bottom: '20px',
+    right: '20px',
+    zIndex: '999999',
+    width: '60px',
+    height: '60px',
+    borderRadius: '50%',
+    border: 'none',
+    background: '#0078d7',
+    color: 'white',
+    fontSize: '28px',
+    cursor: 'pointer',
+    boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
+    transition: 'background 0.3s, transform 0.2s',
+  });
 
   btn.addEventListener('mouseenter', () => (btn.style.transform = 'scale(1.1)'));
   btn.addEventListener('mouseleave', () => (btn.style.transform = 'scale(1)'));
 
   btn.addEventListener('click', () => {
     window.autoLigado = !window.autoLigado;
-    if (window.autoLigado) {
-      btn.textContent = '⏹️';
-      btn.style.background = '#d9534f';
-      console.log('🤖 Auto ligado!');
-    } else {
-      btn.textContent = '▶️';
-      btn.style.background = '#0078d7';
-      console.log('🛑 Auto desligado!');
-    }
+    chrome.storage.local.set({ autoLigado: window.autoLigado });
+    atualizarBotaoVisual(btn, window.autoLigado);
   });
 
   document.body.appendChild(btn);
+  return btn;
 }
 
-// Cria o botao e ativa o observador
-criarBotaoFlutuante();
-const observer = new MutationObserver(verificarChats);
-observer.observe(document.body, { childList: true, subtree: true });
+function atualizarBotaoVisual(btn, ligado) {
+  if (!btn) return;
+  btn.textContent = ligado ? '⏹️' : '▶️';
+  btn.style.background = ligado ? '#d9534f' : '#0078d7';
+}
 
-console.log('🚀 Auto Tawk carregado!');
+// --- SINCRONIZACAO ---
+chrome.storage.onChanged.addListener((changes) => {
+  const btn = document.getElementById('autoTawkBtn');
+  if (changes.autoLigado) {
+    window.autoLigado = changes.autoLigado.newValue;
+    atualizarBotaoVisual(btn, window.autoLigado);
+  }
+  if (changes.botaoVisivel) {
+    botaoVisivel = changes.botaoVisivel.newValue;
+    if (btn) btn.style.display = botaoVisivel ? 'block' : 'none';
+  }
+});
+
+// --- INICIALIZAR ---
+(async () => {
+  criarBotaoFlutuante();
+  const data = await chrome.storage.local.get(['autoLigado', 'botaoVisivel']);
+  window.autoLigado = data.autoLigado ?? false;
+  botaoVisivel = data.botaoVisivel !== false;
+  const btn = document.getElementById('autoTawkBtn');
+  atualizarBotaoVisual(btn, window.autoLigado);
+  btn.style.display = botaoVisivel ? 'block' : 'none';
+
+  const observer = new MutationObserver(verificarChats);
+  observer.observe(document.body, { childList: true, subtree: true });
+  console.log('🚀 Auto Tawk sincronizado carregado!');
+})();

@@ -1,34 +1,29 @@
-const btn = document.getElementById('toggle');
+const btnToggle = document.getElementById('toggle');
+const btnVisibilidade = document.getElementById('visibilidade');
 
-// Atualiza o estado do botao com base na aba atual
-async function atualizarBotao(tabId) {
-  const [{ result }] = await chrome.scripting.executeScript({
-    target: { tabId },
-    func: () => window.autoLigado ?? false,
-  });
-
-  const ligado = Boolean(result);
-  btn.textContent = ligado ? '⏹️' : '▶️'; // muda icone
-  btn.classList.toggle('on', ligado);
+// Atualiza o texto e cor do botao principal
+function atualizarBotao(ligado) {
+  btnToggle.textContent = ligado ? 'Parar Auto' : 'Ativar Auto';
+  btnToggle.classList.toggle('on', ligado);
 }
 
-// Ao clicar, alterna o estado e atualiza o botao
-btn.addEventListener('click', async () => {
-  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-
-  await chrome.scripting.executeScript({
-    target: { tabId: tab.id },
-    func: () => {
-      window.autoLigado = !window.autoLigado;
-      console.log(window.autoLigado ? 'Auto ligado' : 'Auto desligado');
-      alert(window.autoLigado ? 'Auto ligado' : 'Auto desligado');
-    },
-  });
-
-  atualizarBotao(tab.id);
+// Carrega o estado inicial do armazenamento
+chrome.storage.local.get(['autoLigado', 'botaoVisivel'], (data) => {
+  atualizarBotao(data.autoLigado ?? false);
+  btnVisibilidade.textContent = data.botaoVisivel === false ? 'Mostrar Botao' : 'Ocultar Botao';
 });
 
-// Quando o popup abre, mostra o icone correto
-chrome.tabs.query({ active: true, currentWindow: true }).then(([tab]) => {
-  atualizarBotao(tab.id);
+// Alternar ligar/desligar
+btnToggle.addEventListener('click', async () => {
+  const novoEstado = !(await chrome.storage.local.get('autoLigado')).autoLigado;
+  chrome.storage.local.set({ autoLigado: novoEstado });
+  atualizarBotao(novoEstado);
+});
+
+// Alternar visibilidade do botao
+btnVisibilidade.addEventListener('click', async () => {
+  const atual = (await chrome.storage.local.get('botaoVisivel')).botaoVisivel;
+  const novo = atual === false ? true : false;
+  chrome.storage.local.set({ botaoVisivel: novo });
+  btnVisibilidade.textContent = novo ? 'Ocultar Botao' : 'Mostrar Botao';
 });
