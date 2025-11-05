@@ -1,0 +1,16 @@
+tawk-flex tawk-flex-middle tawk-chat-item-contente
+tawk-button tawk-button-solid-primary tawk-button-solid tawk-button-medium
+
+Quando recebe mensagem que não foi aberta: tawk-chat-item tawk-padding tawk-padding-medium-horizontal tawk-margin-bottom unseen need-attn
+Join: tawk-button tawk-button-solid-primary tawk-button-solid tawk-button-medium
+
+Campo de texto: tawk-border-remove tawk-message-input tawk-input-field tawk-message-autoresize
+
+Mensagem ser escrita Oi 
+
+Botao enviar: tawk-button tawk-button-solid-primary tawk-button-solid tawk-button-small tawk-message-send
+
+
+Precisa clicar em monitoramento a tela de chat ou enviara mensagem no mesmo chat
+
+Chat entra em standby a cada tempo precisa de um evento ou interação para não entrar em modo pause e atrapalhar a execução
