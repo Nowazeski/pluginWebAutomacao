@@ -1,13 +1,24 @@
 {
   "manifest_version": 3,
   "name": "Tawk Auto",
-  "version": "3.1",
-  "description": "Automatiza respostas no Tawk.to com botoes sincronizados",
+  "version": "2.0",
+  "description": "Automatiza respostas no Tawk.to com controle de aparencia do botao",
   "permissions": ["scripting", "activeTab", "storage"],
-  "host_permissions": ["https://dashboard.tawk.to/*"],
   "action": {
-    "default_title": "Tawk Auto",
-    "default_popup": "popup.html"
+    "default_title": "Auto Tawk",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icon.png",
+      "32": "icon.png",
+      "48": "icon.png",
+      "128": "icon.png"
+    }
+  },
+  "icons": {
+    "16": "icon.png",
+    "32": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
   },
   "content_scripts": [
     {
