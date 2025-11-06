@@ -7,42 +7,61 @@ function atualizarBotao(ligado) {
   btnToggle.classList.toggle('on', ligado);
 }
 
-// Atualiza label de visibilidade (assume visivel por padrao)
-function atualizarLabelVisibilidade(visivel) {
-  btnVisibilidade.textContent = visivel === false ? 'Mostrar Botao' : 'Ocultar Botao';
+// Função para soltar os corações ❤️
+function soltarCoracoes() {
+  for (let i = 0; i < 20; i++) {
+    const heart = document.createElement('div');
+    heart.className = 'heart';
+    heart.textContent = '❤️';
+    heart.style.left = `${Math.random() * 200}px`;
+    heart.style.fontSize = `${16 + Math.random() * 10}px`;
+    heart.style.animationDelay = `${Math.random() * 0.5}s`;
+    document.body.appendChild(heart);
+
+    // Remove o coração após a animação
+    setTimeout(() => heart.remove(), 2500);
+  }
 }
 
 // Carrega estado inicial
 chrome.storage.local.get(['autoLigado', 'botaoVisivel'], (data) => {
   atualizarBotao(data.autoLigado ?? false);
-  atualizarLabelVisibilidade(data.botaoVisivel !== false);
+  btnVisibilidade.textContent = data.botaoVisivel === false ? 'Mostrar Botão' : 'Ocultar Botão';
 });
 
-// Ouve mudancas no storage para sincronizar quando o content.js alterar o estado
-chrome.storage.onChanged.addListener((changes) => {
-  if (changes.autoLigado) {
-    atualizarBotao(changes.autoLigado.newValue);
-  }
-  if (changes.botaoVisivel) {
-    atualizarLabelVisibilidade(changes.botaoVisivel.newValue);
-  }
-});
-
-// Alternar ligar/desligar (salva no storage; content.js vai reagir)
+// Alternar ligar/desligar
 btnToggle.addEventListener('click', async () => {
-  const data = await chrome.storage.local.get('autoLigado');
-  const novoEstado = !data.autoLigado;
+  const { autoLigado } = await chrome.storage.local.get('autoLigado');
+  const novoEstado = !autoLigado;
+
   await chrome.storage.local.set({ autoLigado: novoEstado });
-  // atualizar UI localmente imediatamente
   atualizarBotao(novoEstado);
+
+  // Se ativar, solta corações ❤️
+  if (novoEstado) soltarCoracoes();
+
+  // Envia o novo estado para o content.js ativo
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  if (tab && tab.id) {
+    await chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      func: (ligado) => {
+        const btn = document.getElementById('autoTawkBtn');
+        if (btn) {
+          btn.textContent = ligado ? '⏹️' : '▶️';
+          btn.style.background = ligado ? '#d9534f' : '#0078d7';
+        }
+        window.autoLigado = ligado;
+      },
+      args: [novoEstado],
+    });
+  }
 });
 
-// Alternar visibilidade do botao (salva no storage; content.js vai reagir)
+// Alternar visibilidade do botão flutuante
 btnVisibilidade.addEventListener('click', async () => {
-  const data = await chrome.storage.local.get('botaoVisivel');
-  // se undefined => atualmente visivel (true). Novo = !atual
-  const atual = data.botaoVisivel;
-  const novo = atual === false ? true : false;
+  const { botaoVisivel } = await chrome.storage.local.get('botaoVisivel');
+  const novo = botaoVisivel === false ? true : false;
   await chrome.storage.local.set({ botaoVisivel: novo });
-  atualizarLabelVisibilidade(novo);
+  btnVisibilidade.textContent = novo ? 'Ocultar Botão' : 'Mostrar Botão';
 });

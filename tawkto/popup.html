@@ -1,41 +1,73 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <style>
-      body {
-        width: 200px;
-        text-align: center;
-        font-family: sans-serif;
-        padding: 10px;
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>AutoTawk Controller</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      width: 180px;              /* 🔽 25% menor que antes (240 → 180) */
+      height: 120px;             /* 🔽 25% menor (160 → 120) */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: white;
+      font-family: Arial, sans-serif;
+      position: relative;
+      overflow: hidden;
+      transform: translateY(2px); /* 🔽 move 2px para baixo */
+      box-sizing: border-box;
+    }
+
+    button {
+      width: 85%;                /* proporcional à nova largura */
+      margin: 0.4em;
+      padding: 0.6em 0;
+      border: none;
+      border-radius: 0.4em;
+      background: #0078d7;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 0.9em;
+      text-align: center;
+      transition: background 0.3s;
+    }
+
+    button:hover { background: #005fa3; }
+    button.on { background: #d9534f; }
+
+    /* ❤️ Animação dos corações */
+    .heart {
+      position: absolute;
+      bottom: 10px;
+      color: red;
+      font-size: 1.2em;
+      opacity: 0.9;
+      animation: subir 2.5s ease-out forwards;
+    }
+
+    @keyframes subir {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
       }
-      button {
-        width: 160px;
-        padding: 10px;
-        margin: 5px;
-        border: none;
-        border-radius: 8px;
-        color: white;
-        cursor: pointer;
-        font-weight: bold;
-        font-size: 15px;
-        transition: 0.2s;
+      100% {
+        transform: translateY(-150%) scale(1.5);
+        opacity: 0;
       }
-      #toggle {
-        background: #0078d7;
-      }
-      #toggle.on {
-        background: #d9534f;
-      }
-      #visibilidade {
-        background: #6c757d;
-      }
-    </style>
-  </head>
-  <body>
-    <h3>Auto Tawk</h3>
-    <button id="toggle">Ativar Auto</button>
-    <button id="visibilidade">Ocultar Botao</button>
-    <script src="popup.js"></script>
-  </body>
+    }
+  </style>
+</head>
+<body>
+  <button id="toggle">Ativar Auto</button>
+  <button id="visibilidade">Ocultar Botão</button>
+
+  <script src="popup.js"></script>
+</body>
 </html>

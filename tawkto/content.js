@@ -1,53 +1,88 @@
+// content.js - versão com pós-envio configurado
 // --- CONFIGURACOES ---
 const seletorChatNovo = '.tawk-chat-item.unseen.need-attn';
 const seletorBotaoJoin = '.tawk-button.tawk-button-solid-primary.tawk-button-solid.tawk-button-medium';
 const seletorCampoTexto = '.tawk-border-remove.tawk-message-input.tawk-input-field.tawk-message-autoresize';
 const seletorBotaoEnviar = '.tawk-button.tawk-button-solid-primary.tawk-button-solid.tawk-button-small.tawk-message-send';
+
+// Botão que deve ser clicado após enviar a mensagem:
+const seletorPosEnvio = '.tawk-icon.tawk-icon-monitoring.tawk-icon-large';
+
 const mensagemAutomatica = 'Hola! 👋Mi nombre es Linette, soy parte del equipo de soporte comercial de Adrian Rivera 🦈¿Como puedo ayudarte a formalizar tu inscripcion?🔥';
-const delay = 1000;
+const delay = 1000; // tempo padrão entre ações (1 segundo)
+const delayPosEnvio = 2000; // tempo para esperar após clicar o botão pós-envio
 
 // --- ESTADO ---
 window.autoLigado = false;
 let botaoVisivel = true;
 const jaRespondidos = new WeakSet();
 
-// --- FUNCOES ---
+// --- FUNCOES AUXILIARES ---
 function esperar(ms) { return new Promise(r => setTimeout(r, ms)); }
 
+// --- LOGICA DE RESPOSTA ---
 async function responderChat(chatEl) {
   if (!window.autoLigado || !chatEl || jaRespondidos.has(chatEl)) return;
   jaRespondidos.add(chatEl);
 
-  chatEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  chatEl.click();
-  await esperar(delay);
-
-  const join = document.querySelector(seletorBotaoJoin);
-  if (join) { join.click(); await esperar(delay * 2); }
-
-  const campo = document.querySelector(seletorCampoTexto);
-  if (campo) {
-    campo.focus();
-    // Preenche o campo (contenteditable ou textarea)
-    if (campo.tagName.toLowerCase() === 'textarea') {
-      campo.value = mensagemAutomatica;
-      campo.dispatchEvent(new Event('input', { bubbles: true }));
-    } else {
-      campo.textContent = mensagemAutomatica;
-      campo.dispatchEvent(new Event('input', { bubbles: true }));
-      campo.dispatchEvent(new KeyboardEvent('keydown', { bubbles: true }));
-      campo.dispatchEvent(new KeyboardEvent('keyup', { bubbles: true }));
-    }
+  try {
+    // abrir o chat
+    chatEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    chatEl.click();
     await esperar(delay);
-    const enviar = document.querySelector(seletorBotaoEnviar);
-    if (enviar) enviar.click();
+
+    // clicar em Join (se existir)
+    const join = document.querySelector(seletorBotaoJoin);
+    if (join) {
+      join.click();
+      await esperar(delay * 2); // mais tempo pra abrir o chat
+    }
+
+    // preencher mensagem
+    const campo = document.querySelector(seletorCampoTexto);
+    if (campo) {
+      campo.focus();
+
+      if (campo.tagName.toLowerCase() === 'textarea') {
+        campo.value = mensagemAutomatica;
+        campo.dispatchEvent(new Event('input', { bubbles: true }));
+      } else {
+        campo.textContent = mensagemAutomatica;
+        campo.dispatchEvent(new Event('input', { bubbles: true }));
+      }
+
+      await esperar(delay);
+
+      // clicar em enviar
+      const enviar = document.querySelector(seletorBotaoEnviar);
+      if (enviar) {
+        enviar.click();
+        await esperar(300);
+      }
+
+      // clicar no botão pós-envio
+      const botaoPosEnvio = document.querySelector(seletorPosEnvio);
+      if (botaoPosEnvio) {
+        botaoPosEnvio.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        botaoPosEnvio.click();
+        console.log('AutoTawk: clicou no botão pós-envio');
+      } else {
+        console.warn('AutoTawk: botão pós-envio não encontrado');
+      }
+
+      // aguarda 2 segundos antes de pegar o próximo chat
+      await esperar(delayPosEnvio);
+    }
+  } catch (e) {
+    console.warn('AutoTawk: erro ao responder chat', e);
   }
 }
 
-// Monitor
+// --- MONITORAMENTO ---
 function verificarChats() {
   if (!window.autoLigado) return;
-  document.querySelectorAll(seletorChatNovo).forEach(responderChat);
+  const chats = document.querySelectorAll(seletorChatNovo);
+  chats.forEach(responderChat);
 }
 setInterval(verificarChats, 2000);
 
@@ -82,7 +117,6 @@ function criarBotaoFlutuante(visivelInicial = true, ligadoInicial = false) {
   btn.addEventListener('mouseleave', () => (btn.style.transform = 'scale(1)'));
 
   btn.addEventListener('click', () => {
-    // Atualiza estado global via storage -> popup escuta storage.onChanged
     window.autoLigado = !window.autoLigado;
     chrome.storage.local.set({ autoLigado: window.autoLigado });
     atualizarBotaoVisual(btn, window.autoLigado);
@@ -98,7 +132,7 @@ function atualizarBotaoVisual(btn, ligado) {
   btn.style.background = ligado ? '#d9534f' : '#0078d7';
 }
 
-// --- SINCRONIZACAO: reage a mudancas feitas pelo popup ---
+// --- SINCRONIZACAO ---
 chrome.storage.onChanged.addListener((changes) => {
   const btn = document.getElementById('autoTawkBtn');
 
@@ -122,7 +156,7 @@ chrome.storage.onChanged.addListener((changes) => {
   }
 });
 
-// --- INICIALIZAR ---
+// --- INICIALIZACAO ---
 (async () => {
   const data = await chrome.storage.local.get(['autoLigado', 'botaoVisivel']);
   window.autoLigado = data.autoLigado ?? false;
@@ -134,4 +168,6 @@ chrome.storage.onChanged.addListener((changes) => {
 
   const observer = new MutationObserver(verificarChats);
   observer.observe(document.body, { childList: true, subtree: true });
+
+  console.log('AutoTawk carregado - pós-envio configurado:', seletorPosEnvio);
 })();
