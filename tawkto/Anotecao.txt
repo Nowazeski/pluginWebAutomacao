@@ -14,3 +14,11 @@ Botao enviar: tawk-button tawk-button-solid-primary tawk-button-solid tawk-butto
 Precisa clicar em monitoramento a tela de chat ou enviara mensagem no mesmo chat
 
 Chat entra em standby a cada tempo precisa de um evento ou interação para não entrar em modo pause e atrapalhar a execução
+
+active router-link-exact-active top-navigation__item tawk-margin-xsmall-right
+
+
+
+Mensagem: Hola! 👋 Mi nombre es Linette, soy parte del equipo de soporte comercial de Adrian Rivera 🦈 ¿Cómo puedo ayudarte a formalizar tu inscripción? 🔥
+
+Os corações está entrando na frente do chat e atrapalhando na hora de clicar
