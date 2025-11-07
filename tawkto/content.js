@@ -1,21 +1,21 @@
-// content.js - controla a visibilidade do botão flutuante
-(function () {
-  function getBtn() {
-    return document.getElementById("autoTawkBtn");
-  }
+// Content script - roda na página com o botão flutuante
+(function(){
+  function getBtn(){ return document.getElementById('autoTawkBtn'); }
 
-  function aplicarBloqueio(bloquear) {
+  function aplicarBloqueio(bloquear){
     const btn = getBtn();
-    if (!btn) return;
-    btn.style.display = bloquear ? "none" : "";
+    if(!btn) return;
+    btn.style.display = bloquear ? 'none' : '';
   }
 
-  chrome.storage.local.get("pluginBloqueado", (res) => {
+  // lê estado inicial
+  chrome.storage.local.get('pluginBloqueado', (res) => {
     aplicarBloqueio(res.pluginBloqueado === true);
   });
 
+  // escuta mudanças
   chrome.storage.onChanged.addListener((changes, area) => {
-    if (area === "local" && changes.pluginBloqueado) {
+    if(area === 'local' && changes.pluginBloqueado){
       aplicarBloqueio(changes.pluginBloqueado.newValue === true);
     }
   });

@@ -1,40 +1,24 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>AutoTawk - Login / Cadastro</title>
   <link rel="stylesheet" href="popup.css">
-
-  <!-- Firebase compat -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyCjeJ9e-aXV-OO7TbDeEFND19XGWefu1lI",
-      authDomain: "tawkchat-7a5b4.firebaseapp.com",
-      projectId: "tawkchat-7a5b4",
-      storageBucket: "tawkchat-7a5b4.firebasestorage.app",
-      messagingSenderId: "816237368657",
-      appId: "1:816237368657:web:41c225f78494f882f0af70",
-      measurementId: "G-DQ69NGVDWV"
-    };
-    firebase.initializeApp(firebaseConfig);
-  </script>
 </head>
 <body>
   <div id="card">
     <h3 id="title">Entrar</h3>
 
-    <input id="nome" type="text" placeholder="Nome" style="display:none" />
-    <input id="sobrenome" type="text" placeholder="Sobrenome" style="display:none" />
-    <input id="email" type="email" placeholder="Email" />
-    <input id="senha" type="password" placeholder="Senha" />
+    <input id="nome" type="text" placeholder="Nome" style="display:none">
+    <input id="sobrenome" type="text" placeholder="Sobrenome" style="display:none">
+
+    <input id="email" type="email" placeholder="Email">
+    <input id="senha" type="password" placeholder="Senha">
 
     <button id="actionBtn">Entrar</button>
     <div id="toggleCreate" class="link">Criar nova conta</div>
+    <button id="voltarBtn" style="display:none; margin-top:6px;">Voltar</button>
 
     <p id="statusMsg" class="status"></p>
 
@@ -44,6 +28,6 @@
     </div>
   </div>
 
-  <script src="popup.js"></script>
+  <script type="module" src="popup.js"></script>
 </body>
 </html>

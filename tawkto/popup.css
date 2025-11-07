@@ -1,80 +1,52 @@
-:root {
+:root{
   --p1:#0078d7; 
   --p2:#005fa3; 
   --bg:#f6f8fb; 
   --card:#ffffff;
 }
-
-* {
-  box-sizing: border-box;
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg)}
+#card{
+  width:260px;
+  padding:14px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:8px;
+  background:var(--card);
+  border-radius:10px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.1);
 }
-
-html, body {
-  height: 100%;
-  margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-  background: var(--bg);
+h3{margin:0;color:#222}
+input{
+  width:92%;
+  padding:8px;
+  border-radius:8px;
+  border:1px solid #d0d7df;
+  font-size:0.9em;
 }
-
-#card {
-  width: 260px;
-  margin: 0 auto;
-  padding: 14px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background: var(--card);
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  gap: 8px;
+button{
+  width:92%;
+  padding:9px;
+  border-radius:10px;
+  border:none;
+  cursor:pointer;
+  color:#fff;
+  font-weight:700;
+  background:linear-gradient(135deg,var(--p1),var(--p2));
 }
-
-h3 {
-  margin: 0;
-  color: #222;
+button:hover{filter:brightness(.96)}
+.link{
+  color:var(--p1);
+  font-size:0.85em;
+  text-decoration:underline;
+  cursor:pointer;
+  margin-top:4px;
 }
-
-input {
-  width: 92%;
-  padding: 8px;
-  border-radius: 8px;
-  border: 1px solid #d0d7df;
-  font-size: 0.9em;
+.status{
+  font-size:0.85em;
+  color:#333;
+  min-height:18px;
+  text-align:center;
 }
-
-button {
-  width: 92%;
-  padding: 9px;
-  border-radius: 10px;
-  border: none;
-  cursor: pointer;
-  color: #fff;
-  font-weight: 700;
-  background: linear-gradient(135deg, var(--p1), var(--p2));
-  transition: transform 0.1s ease, filter 0.1s ease;
-}
-
-button:hover {
-  filter: brightness(.96);
-  transform: scale(1.02);
-}
-
-.link {
-  color: var(--p1);
-  font-size: 0.85em;
-  text-decoration: underline;
-  cursor: pointer;
-  margin-top: 4px;
-}
-
-.status {
-  font-size: 0.85em;
-  color: #333;
-  min-height: 18px;
-  text-align: center;
-}
-
-#main-area button {
-  margin-top: 6px;
-  width: 92%;
-}
+#main-area button{ margin-top:6px; width:92% }
