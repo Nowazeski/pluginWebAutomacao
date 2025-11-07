@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "AutoTawk",
+  "description": "Automação do chat Tawk.to - Desenvolvido por José Carlos Nowazeski Filho",
+  "version": "1.0",
+  "author": "José Carlos Nowazeski Filho",
+  "action": {
+    "default_popup": "index.html",
+    "default_icon": {
+      "16": "icon.png",
+      "48": "icon.png",
+      "128": "icon.png"
+    }
+  },
+  "icons": {
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ],
+  "permissions": []
+}
