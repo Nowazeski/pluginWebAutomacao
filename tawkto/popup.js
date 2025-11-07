@@ -1,6 +1,7 @@
-import { auth, db } from './firebase-init.js';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
+// popup.js
+import { auth, db } from './firebase/firebase-init.js';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from './firebase/firebase-auth.js';
+import { doc, setDoc, getDoc } from './firebase/firebase-firestore.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   const title = document.getElementById('title');
@@ -43,6 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
   actionBtn.addEventListener('click', async () => {
     const email = emailInput.value.trim();
     const senha = senhaInput.value.trim();
+
     if (!email || !senha) return alert("Preencha email e senha!");
 
     if (isCreateMode) {
@@ -64,6 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
+    // Login
     try {
       const cred = await signInWithEmailAndPassword(auth, email, senha);
       const docSnap = await getDoc(doc(db, 'usuarios', cred.user.uid));
@@ -87,6 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   setCreateMode(false);
 
+  // Verifica login
   onAuthStateChanged(auth, async (user) => {
     if (!user) {
       mainArea.style.display = 'none';
