@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login - AutoTawk</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      width: 320px;
+      padding: 20px;
+      margin: 0;
+    }
+
+    h2 {
+      text-align: center;
+      color: #0078d7;
+    }
+
+    .input-group {
+      margin-bottom: 10px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    input {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 6px;
+      background-color: #0078d7;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover { background-color: #005fa3; }
+
+    #voltarBtn {
+      display: none;
+      background-color: #555;
+    }
+
+    #toggleCreate, #recuperarSenha {
+      display: block;
+      text-align: center;
+      color: #0078d7;
+      text-decoration: none;
+      font-size: 13px;
+      margin-top: 8px;
+      cursor: pointer;
+    }
+
+    #statusMsg {
+      text-align: center;
+      font-size: 13px;
+      margin-top: 10px;
+    }
+
+    #main-area {
+      display: none;
+      text-align: center;
+      margin-top: 20px;
+    }
+  </style>
+  <script type="module" crossorigin src="/popup.js"></script>
+</head>
+<body>
+  <h2 id="title">Entrar</h2>
+
+  <div id="form-area">
+    <div id="nomeGroup" class="input-group" style="display:none;">
+      <label>Nome:</label>
+      <input type="text" id="nome" />
+    </div>
+
+    <div id="sobrenomeGroup" class="input-group" style="display:none;">
+      <label>Sobrenome:</label>
+      <input type="text" id="sobrenome" />
+    </div>
+
+    <div class="input-group">
+      <label>Email:</label>
+      <input type="email" id="email" />
+    </div>
+
+    <div class="input-group">
+      <label>Senha:</label>
+      <input type="password" id="senha" />
+    </div>
+
+    <button id="actionBtn">Entrar</button>
+    <button id="voltarBtn">Voltar</button>
+    <a id="toggleCreate">Criar nova conta</a>
+    <a id="recuperarSenha">Esqueci minha senha</a>
+  </div>
+
+  <div id="statusMsg"></div>
+
+  <div id="main-area">
+    <p>✅ Acesso liberado ao sistema!</p>
+  </div>
+
+</body>
+</html>
