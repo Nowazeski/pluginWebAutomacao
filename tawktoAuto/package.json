@@ -1,0 +1,19 @@
+{
+  "name": "autotawk",
+  "version": "1.0.0",
+  "description": "Automação do chat Tawk.to - Desenvolvido por José Carlos Nowazeski Filho",
+  "author": "José Carlos Nowazeski Filho",
+  "license": "MIT",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "firebase": "^10.14.1"
+  },
+  "devDependencies": {
+    "patch-package": "^8.0.1",
+    "vite": "^7.2.2"
+  }
+}

@@ -1,0 +1,29 @@
+#card {
+  width: 300px;
+  padding: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-family: sans-serif;
+}
+
+input, button {
+  width: 100%;
+  margin: 4px 0;
+  padding: 8px;
+}
+
+button {
+  cursor: pointer;
+}
+
+.link {
+  color: blue;
+  cursor: pointer;
+  margin-top: 6px;
+  display: inline-block;
+}
+
+.status {
+  margin-top: 8px;
+  font-weight: bold;
+}
