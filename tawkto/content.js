@@ -1,4 +1,4 @@
-// content.js — Versão final: envia mensagem → delay 2s → fecha chat
+// content.js — Versão final completa: abre chat cliente → JOIN → envia mensagem → fecha → delay 2s
 (async () => {
   if (!location.hostname.includes("tawk.to")) return;
   if (window.__tawkAutoInjected) return;
@@ -36,7 +36,8 @@
     ".tawk-chat-back-button",
     ".tawk-back"
   ];
-  const FECHAR_SELECTOR = ".tawk-icon.tawk-icon-circlecross.tawk-icon-large";
+
+  const FECHAR_CHAT_SELECTOR = ".tawk-icon.tawk-icon-circlecross.tawk-icon-large";
 
   const MENSAGEM = "Hola! 👋 Mi nombre es Linette, soy parte del equipo de soporte comercial de Adrian Rivera 🦈 ¿Cómo puedo ayudarte a formalizar tu inscripción? 🔥";
 
@@ -114,7 +115,9 @@
 
   function localizarChats() {
     const encontrados = [];
-    for (const sel of CHAT_SELECTORS) encontrados.push(...deepQuerySelectorAll(sel));
+    for (const sel of CHAT_SELECTORS) {
+      encontrados.push(...deepQuerySelectorAll(sel));
+    }
     return [...new Set(encontrados)];
   }
 
@@ -131,14 +134,9 @@
     return el.textContent.trim();
   }
 
-  function obterBotaoVoltar() {
-    const botoes = [];
-    for (const sel of BACK_BUTTON_SELECTORS) botoes.push(...deepQuerySelectorAll(sel));
-    return botoes[0] || null;
-  }
-
   async function preencherEClicarEnviar(campo, mensagem) {
     if (!campo) return false;
+
     try {
       campo.focus();
       campo.innerText = mensagem;
@@ -151,18 +149,28 @@
       botaoEnviar = deepQuerySelector(sel);
       if (botaoEnviar) break;
     }
+
     if (botaoEnviar) {
-      try { botaoEnviar.click(); await esperar(300); return true; } catch (e) {}
+      try { botaoEnviar.click(); await esperar(300); return true; }
+      catch (e) {}
     }
+
     return false;
   }
 
   async function clicarJoin(chatPanel) {
     const join = deepQuerySelector(JOIN_SELECTOR, chatPanel);
     if (!join) return false;
-    // filtrar botão que não seja "New Organization"
-    if (join.textContent && join.textContent.includes("New Organization")) return false;
-    try { join.click(); await esperar(600); return true; } catch (e) { return false; }
+    if (join.textContent.includes("New Organization")) return false; // evita abrir botões errados
+    try {
+      join.click();
+      await esperar(600);
+      return true;
+    } catch (e) { return false; }
+  }
+
+  function obterBotaoFechar(chatPanel) {
+    return deepQuerySelector(FECHAR_CHAT_SELECTOR, chatPanel);
   }
 
   // ---------- Loop principal ----------
@@ -173,9 +181,9 @@
 
     while (autoLigado) {
       try {
-        const chats = localizarChats().filter(itemÉCliente);
+        const chatsClientes = localizarChats().filter(itemÉCliente);
 
-        for (const chat of chats) {
+        for (const chat of chatsClientes) {
           const nomeChat = obterNomeChatNoItem(chat);
           if (!nomeChat || chatsAtendidos.includes(nomeChat)) continue;
 
@@ -190,7 +198,7 @@
             continue;
           }
 
-          // esperar campo aparecer
+          // localizar campo e enviar
           let campo = null;
           for (const sel of INPUT_SELECTORS) {
             campo = deepQuerySelector(sel, painel);
@@ -199,24 +207,16 @@
           if (!campo) { await esperar(600); campo = deepQuerySelector(INPUT_SELECTORS[0], painel); }
           if (!campo) continue;
 
-          // enviar mensagem
           await preencherEClicarEnviar(campo, MENSAGEM);
           chatsAtendidos.push(nomeChat);
           console.log("[AutoTawk] mensagem enviada para:", nomeChat);
 
-          // delay de 2 segundos
+          // fechar chat
+          const fechar = obterBotaoFechar(painel);
+          if (fechar) try { fechar.click(); } catch {}
+
+          // delay de 2 segundos antes do próximo chat
           await esperar(2000);
-
-          // clicar botão fechar chat
-          const fechar = deepQuerySelector(FECHAR_SELECTOR, painel);
-          if (fechar) {
-            try { fechar.click(); await esperar(400); } catch {}
-          }
-
-          // voltar botão seguro caso ainda exista
-          const voltar = obterBotaoVoltar();
-          if (voltar) try { voltar.click(); } catch {}
-          await esperar(700);
         }
 
         await esperar(1000);
