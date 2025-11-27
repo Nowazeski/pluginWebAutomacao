@@ -1,24 +1,25 @@
 const btnToggle = document.getElementById('toggle');
 const btnVisibilidade = document.getElementById('visibilidade');
 
-// Atualiza visual do botao principal
+// Atualiza visual
 function atualizarBotao(ligado) {
   btnToggle.textContent = ligado ? 'Parar Auto' : 'Ativar Auto';
   btnToggle.classList.toggle('on', ligado);
 }
 
-// Função para soltar os corações ❤️
+// Animação de corações
 function soltarCoracoes() {
-  for (let i = 0; i < 20; i++) {
+  const largura = document.body.clientWidth;
+
+  for (let i = 0; i < 12; i++) {
     const heart = document.createElement('div');
     heart.className = 'heart';
     heart.textContent = '❤️';
-    heart.style.left = `${Math.random() * 200}px`;
+    heart.style.left = `${Math.random() * largura}px`;
     heart.style.fontSize = `${16 + Math.random() * 10}px`;
     heart.style.animationDelay = `${Math.random() * 0.5}s`;
     document.body.appendChild(heart);
 
-    // Remove o coração após a animação
     setTimeout(() => heart.remove(), 2500);
   }
 }
@@ -29,7 +30,7 @@ chrome.storage.local.get(['autoLigado', 'botaoVisivel'], (data) => {
   btnVisibilidade.textContent = data.botaoVisivel === false ? 'Mostrar Botão' : 'Ocultar Botão';
 });
 
-// Alternar ligar/desligar
+// Liga / Desliga automação
 btnToggle.addEventListener('click', async () => {
   const { autoLigado } = await chrome.storage.local.get('autoLigado');
   const novoEstado = !autoLigado;
@@ -37,13 +38,11 @@ btnToggle.addEventListener('click', async () => {
   await chrome.storage.local.set({ autoLigado: novoEstado });
   atualizarBotao(novoEstado);
 
-  // Se ativar, solta corações ❤️
   if (novoEstado) soltarCoracoes();
 
-  // Envia o novo estado para o content.js ativo
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  if (tab && tab.id) {
-    await chrome.scripting.executeScript({
+  if (tab?.id) {
+    chrome.scripting.executeScript({
       target: { tabId: tab.id },
       func: (ligado) => {
         const btn = document.getElementById('autoTawkBtn');
@@ -58,10 +57,11 @@ btnToggle.addEventListener('click', async () => {
   }
 });
 
-// Alternar visibilidade do botão flutuante
+// Alternar visibilidade
 btnVisibilidade.addEventListener('click', async () => {
   const { botaoVisivel } = await chrome.storage.local.get('botaoVisivel');
   const novo = botaoVisivel === false ? true : false;
+
   await chrome.storage.local.set({ botaoVisivel: novo });
   btnVisibilidade.textContent = novo ? 'Ocultar Botão' : 'Mostrar Botão';
 });

@@ -4,7 +4,9 @@
   "description": "Automação do chat Tawk.to - Desenvolvido por José Carlos Nowazeski Filho",
   "version": "1.0",
   "author": "José Carlos Nowazeski Filho",
-  "permissions": ["storage", "scripting"],
+
+  "permissions": ["storage", "scripting", "activeTab"],
+
   "content_scripts": [
     {
       "matches": ["https://dashboard.tawk.to/*"],
@@ -12,6 +14,7 @@
       "run_at": "document_idle"
     }
   ],
+
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
@@ -20,6 +23,7 @@
       "128": "icon.png"
     }
   },
+
   "icons": {
     "16": "icon.png",
     "48": "icon.png",
